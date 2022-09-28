@@ -1,0 +1,13 @@
+version: '3.9'
+services:
+  vault:
+    image: vault:1.11.3
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+    command: ["server", "--dev", '-dev-root-token-id=root']
+  rabbit:
+    image: rabbitmq:3.10-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"

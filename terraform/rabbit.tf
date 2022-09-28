@@ -1,5 +1,5 @@
 resource "vault_rabbitmq_secret_backend" "rabbitmq" {
-  connection_uri  = "http://localhost:5672"
+  connection_uri  = "http://rabbit:5672"
   username        = "guest"
   password        = "guest"
   verify_connection = false
