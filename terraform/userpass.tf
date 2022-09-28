@@ -32,7 +32,7 @@ resource "vault_policy" "rabbitmq" {
   name = "rabbitmq"
 
   policy = <<EOT
-path "rabbitmq/creds/deploy" {
+path "rabbitmq/creds/${vault_rabbitmq_secret_backend_role.role.name}" {
   capabilities = ["read"]
 }
 EOT

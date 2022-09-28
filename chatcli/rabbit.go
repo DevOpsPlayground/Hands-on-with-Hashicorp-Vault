@@ -27,10 +27,10 @@ func sendMessage(ch *amqp.Channel, ctx context.Context, msg, queueName string){
 }
 
 
-func runRabbit(){
+func runRabbit(username, password string){
 	//Set up
-	username := "guest"
-	password := "guest"
+	//username := "guest"
+	//password := "guest"
 	url := "localhost"
 	port := "5672"
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s",username,password,url,port))

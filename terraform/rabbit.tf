@@ -7,7 +7,7 @@ resource "vault_rabbitmq_secret_backend" "rabbitmq" {
 
 resource "vault_rabbitmq_secret_backend_role" "role" {
   backend = vault_rabbitmq_secret_backend.rabbitmq.path
-  name    = "deploy"
+  name    = "chat"
 
   tags = "tag1,tag2"
 
