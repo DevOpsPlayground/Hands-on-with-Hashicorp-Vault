@@ -13,9 +13,9 @@ resource "vault_rabbitmq_secret_backend_role" "role" {
 
   vhost {
     host = "/"
-    configure = "test"
-    read = "^(chat|test)$"
-    write = "^(chat|test)$"
+    configure = "^(chat|amq.gen.*)$"
+    read = "^(chat|amq.gen.*)$"
+    write = "^(chat|amq.gen.*)$"
   }
 
 

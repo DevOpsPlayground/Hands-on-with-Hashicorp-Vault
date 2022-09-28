@@ -11,10 +11,10 @@ import(
 )
 
 
-func sendMessage(ch *amqp.Channel, ctx context.Context, msg, queueName string){
+func sendMessage(ch *amqp.Channel, ctx context.Context, msg, exchange string){
 	err := ch.PublishWithContext(ctx,
-		"", //exchange
-		queueName, //routing Key
+		exchange, //exchange
+		"", //routing Key
 		false, //mandatory
 		false, //immediate
 		amqp.Publishing{
@@ -40,12 +40,22 @@ func runRabbit(username, password string){
 	ch, err := conn.Channel()
 	failOnError(err, "Failed to open a channel")
 	defer ch.Close()
-
+	exchangeName := "chat"
+	err = ch.ExchangeDeclare(
+		exchangeName,   // name
+		"fanout", // type
+		true,     // durable
+		false,    // auto-deleted
+		false,    // internal
+		false,    // no-wait
+		nil,      // arguments
+	)
+	failOnError(err, "Failed to declare exchange")
 	q, err := ch.QueueDeclare(
-		"hello", // Name
+		"", // Name
 		false, //durable
 		false, //delete when unused
-		false, //exclusive
+		true, //exclusive
 		false, //no-wait
 		nil, //args
 	)
@@ -61,7 +71,14 @@ func runRabbit(username, password string){
 		nil,	//args
 	)
 	failOnError(err, "Failed to register consumer")
-
+	err = ch.QueueBind(
+		q.Name, // queue name
+		"",     // routing key
+		exchangeName, // exchange
+		false,
+		nil,
+	)
+	failOnError(err, "Failed to bind Queue")
 	var forever chan struct{}
 
 	go func()  {
@@ -77,7 +94,7 @@ func runRabbit(username, password string){
 	for true{
 		scanner := bufio.NewScanner(os.Stdin)
     	scanner.Scan()
-		sendMessage(ch,ctx,scanner.Text(),q.Name)
+		sendMessage(ch,ctx,scanner.Text(),exchangeName)
 	}
 	
 
