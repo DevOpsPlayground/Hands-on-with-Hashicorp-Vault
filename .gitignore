@@ -1,0 +1,3 @@
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/.terraform/providers/registry.terraform.io/hashicorp/vault/3.8.2/darwin_amd64/terraform-provider-vault_v3.8.2_x5
