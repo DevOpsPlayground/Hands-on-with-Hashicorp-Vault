@@ -29,7 +29,7 @@ type data struct{
 }
 func main(){
 	vaulturl := "http://localhost:8200"
-	username := "byteford"
+	username := "panda"
 	resp, err := http.PostForm(
 		fmt.Sprintf("%s/v1/auth/userpass/login/%s",vaulturl, username),
 	 	url.Values{"password":{"pass"}})
