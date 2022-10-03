@@ -132,7 +132,11 @@ Then under the comment `//code to get go token` add the following
 
 ## Create secrets engine
 
+Now we can login with our app, its not very useful unless we enable a secrets engine. We are going to use rabbitMQ as our secrets engine, this will genirate a rabbitMQ username and password when you hit the `http://127.0.0.1:8200/v1/rabbitmq/creds/<role>`. While this might not seem useful using a username and password to genirate a username and password. You could enable another authmethod to let a user athenticate with rabbitMQ by just running the applicaiton on the correct system.
+
 ### Create secret mount
+
+The first step to use a secret engine in vault is to enable the engine mount. Below is the curl command to enable the rabbitmq secret engine.
 
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/sys/mounts/rabbitmq \
@@ -144,8 +148,13 @@ curl --request POST http://127.0.0.1:8200/v1/sys/mounts/rabbitmq \
 
 ### Connect vault and rabbit
 
+Now we have enabled the secret engine, its not very useful unless we tell vault how to talk to rabbitMQ.
+As we are using docker compose to host the services we can make use of the dns that comes with it that allows us to just call the service name to talk between containers.
+
+As for the username and password rabbitmq comes with an admin user out the box, so we can just use that to authenticate.
+
 ``` bash
-curl --request POST 'http://127.0.0.1:8200/v1/rabbitmq/config/connection' \
+curl --request POST http://127.0.0.1:8200/v1/rabbitmq/config/connection \
 --header 'X-Vault-Token: root' \
 --data-raw '{
     "connection_uri": "http://rabbit:15672",
@@ -155,6 +164,10 @@ curl --request POST 'http://127.0.0.1:8200/v1/rabbitmq/config/connection' \
 ```
 
 ### Create rabbit role
+
+Next we need to tell vault what the rabbitMQ role should look like, this will be the permission in side of rabbitMQ that the new user will get.
+
+These permissions will let the app configure and services called chat, and auto named services. [https://www.rabbitmq.com/access-control.html#authorisation](https://www.rabbitmq.com/access-control.html#authorisation)
 
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/rabbitmq/roles/chat \
@@ -167,6 +180,10 @@ curl --request POST http://127.0.0.1:8200/v1/rabbitmq/roles/chat \
 ```
 
 ## Add code to get rabbitMQ details
+
+Time to put it all together and add the code to let our application get the rabbitMQ login.
+
+Add the following code after the `//code to log in to rabbit` comment
 
 ``` go
   client := &http.Client{}
