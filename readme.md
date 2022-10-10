@@ -86,7 +86,7 @@ In the below command you will need to get the canonical_id from the user you jus
 curl --request POST http://127.0.0.1:8200/v1/identity/entity-alias \
    --header "X-Vault-Token: root" \
    --data-raw '{
-  "name": "panda"
+  "name": "panda",
   "canonical_id": "<User canonical id>",
   "mount_accessor": "<Auth method accessor>"
 }'
