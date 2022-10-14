@@ -5,7 +5,7 @@ The first thing we need to do it start vault and RabbitMQ, to do this we are jus
 > :warning: **Dont do this in PROD**: This is a quick lab to walk though how vault works, non of this is prod ready
 
 To start the containers run docker compose:
-`docker compose up`
+`docker-compose up -d`
 
 ## Go login to vault
 
