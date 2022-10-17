@@ -23,7 +23,7 @@ Now that vault is up time to get familiar with the UI, even though we can (and w
 
 In your browser go to `http://<your panda>.devopsplayground.org:8200/` and in the screen type `root` as the token
 
-![login]("./images/login.png")
+![login](images/login.png)
 
 UI time
 
