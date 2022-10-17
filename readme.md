@@ -95,14 +95,21 @@ curl --request POST http://127.0.0.1:8200/v1/auth/userpass/users/panda \
 If you now try and log in with the created user, you will find it cant do anything. This is because the identity has the permissions and we havent linked them together yet.  
 
 In the below command you will need to get the canonical_id from the user you just created, and the Mount_accessor we created at the start, if you scrol up you might be able to see them or you can find from the UI:
-< pictures showing stuff >
+
+From the UI go to the Access from the nav bar.
+
+UserID:
+![UserID](images/userID.png)
+
+Auth method Accessor:
+![Auth method](images/mount.png)
 
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/identity/entity-alias \
    --header "X-Vault-Token: root" \
    --data-raw '{
   "name": "panda",
-  "canonical_id": "<User canonical id>",
+  "canonical_id": "<User id>",
   "mount_accessor": "<Auth method accessor>"
 }'
 ```
