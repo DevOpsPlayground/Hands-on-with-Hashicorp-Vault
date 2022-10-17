@@ -102,12 +102,14 @@ UserID:
 ![UserID](images/userID.png)
 
 If you would rather get this infomation from the command line:
+
 `curl http://127.0.0.1:8200/v1/identity/entity/name/panda --header "X-Vault-Token: root" | jq ".data.id"`
 
 Auth method Accessor:
 ![Auth method](images/mount.png)
 
 If you would rather get this infomation from the command line:
+
 `curl http://127.0.0.1:8200/v1/sys/auth/userpass --header "X-Vault-Token: root" | jq ".accessor"`
 
 ``` bash
