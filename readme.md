@@ -25,7 +25,8 @@ In your browser go to `http://<your panda>.devopsplayground.org:8200/` and in th
 
 ![login](images/login.png)
 
-UI time
+Have a look around the other parts of vault from the nav bar.
+![nav](images/nav.png)
 
 ## Set up auth method - userpass
 
@@ -110,7 +111,7 @@ curl --request POST http://127.0.0.1:8200/v1/identity/entity-alias \
 
 Now that we have created a user, let add the code to allow us to log in.
 
-Open up `./chatcli/main.go`
+Open up `./main.go`
 
 Replace the import block at the top with
 
@@ -128,18 +129,18 @@ Replace the import block at the top with
 Then under the comment `//code to get go token` add the following
 
 ``` go
-  vaulturl := "http://localhost:8200"
-  username := "panda"
+  vaulturl := "http://localhost:8200" //the vault server url
+  username := "panda" //The username for the userpass auth method
   resp, err := http.PostForm(
-  fmt.Sprintf("%s/v1/auth/userpass/login/%s",vaulturl, username),
-  url.Values{"password":{"pass"}})
+  fmt.Sprintf("%s/v1/auth/userpass/login/%s",vaulturl, username), //builds the url for the login endpoint
+  url.Values{"password":{"pass"}}) //passess in the password we set earlyer (could be grabed from user input)
   failOnError(err, "failed to log in to vault")
   defer resp.Body.Close()
-  body, err := io.ReadAll(resp.Body)
+  body, err := io.ReadAll(resp.Body) //reads the body of the responce
   failOnError(err, "failed to read body")
   fmt.Print(string(body))
   var up userpass
-  err = json.Unmarshal(body,&up)
+  err = json.Unmarshal(body,&up) //converts the body in to a go struct so we can get the token
   failOnError(err, "failed to Unmarshal body")
   fmt.Println(up)
 ```
@@ -201,18 +202,18 @@ Add the following code after the `//code to log in to rabbit` comment
 
 ``` go
   client := &http.Client{}
-  req, err := http.NewRequest("GET",fmt.Sprintf("%s/v1/rabbitmq/creds/chat", vaulturl),nil)
+  req, err := http.NewRequest("GET",fmt.Sprintf("%s/v1/rabbitmq/creds/chat", vaulturl),nil) //bulds the url to the secrets endpoint
   failOnError(err, "failed make req")
-  req.Header.Set("X-Vault-Token",up.Auth.ClientToken)
-  resp, err = client.Do(req)
+  req.Header.Set("X-Vault-Token",up.Auth.ClientToken) //sets the token to the vault returned from the last block
+  resp, err = client.Do(req) //sends the HTTP request
   failOnError(err, "failed to send request")
   defer resp.Body.Close()
   body, err = io.ReadAll(resp.Body)
   failOnError(err, "failed to read body")
   fmt.Print(string(body))
   var rab rabbit
-  err = json.Unmarshal(body,&rab)
+  err = json.Unmarshal(body,&rab) //converts the body in to a go struct containing the rabbitMQ username and password
   failOnError(err, "failed to Unmarshal body")
   fmt.Println(rab)
-  runRabbit(rab.Data.Username,rab.Data.Password)
+  runRabbit(rab.Data.Username,rab.Data.Password) //runs the rabbit code passing though the username and password retreaved from vault
 ```
