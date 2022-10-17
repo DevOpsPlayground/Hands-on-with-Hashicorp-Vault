@@ -4,12 +4,26 @@ The first thing we need to do it start vault and RabbitMQ, to do this we are jus
 
 > :warning: **Dont do this in PROD**: This is a quick lab to walk though how vault works, non of this is prod ready
 
+If on the devops playground lab: `cd` in to the lab root
+
+`cd workdir/Hands-on-with-Hashicorp-Vault`
+
 To start the containers run docker compose:
 `docker-compose up -d`
+
+With in the `docker-compose.yml` file we start a vault and rabbitMQ server.
+
+This is the command we use to run vault:
+`command: ["server", "--dev", '-dev-root-token-id=root']`
+It starts vault in dev mode, with `root` as the root token.
 
 ## Go login to vault
 
 Now that vault is up time to get familiar with the UI, even though we can (and will) be doing everything with API calls the UI is a nice way of double checking everything works.
+
+In your browser go to `http://<your panda>.devopsplayground.org:8200/` and in the screen type `root` as the token
+
+![login]("./images/login.png")
 
 UI time
 
