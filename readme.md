@@ -34,7 +34,7 @@ We have seen the UI but its not got a lot going on at the moment, lets set up an
 
 ### Create auth method
 
-Run the following curl request. This will make a userpass authmethod at the path `/userpass`
+Run the following curl request. This will make a auth method of type userpass at the path `/userpass`
 
 ``` bash
 curl --request POST  http://127.0.0.1:8200/v1/sys/auth/userpass \
@@ -48,7 +48,7 @@ curl --request POST  http://127.0.0.1:8200/v1/sys/auth/userpass \
 
 > :exclamation: depending on the auth method used it refers to how you are login diffrently. As we are using userpass I will be talking about user, but could be replces with role if talking about a diffrent auth method
 
-Vault uses policies to let user do things. Before we create a user let create the policy that will let it read the rabbitMQ login details
+Vault uses policies to let user do things. Before we create a user let create the policy that will let it read the rabbitMQ login details. This will create a policy called `rabbitmq` that has access to read the `rabbitmq/creds/chat` path
 
 ``` bash
 curl --request PUT http://127.0.0.1:8200/v1/sys/policies/acl/rabbitmq \
@@ -64,14 +64,13 @@ While we could just create a user, we want to alow our app to be easly extended 
 
 The below curl request makes a identity called panda with the policy we attached earlyer. If you wanted to make another user you would just have to rerun the folowing 3 curl commands changeing where you see panda to something else.
 
+This comand make an entity with the name panda and attaches the rabbitmq policy we made earlyer
+
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/identity/entity \
    --header "X-Vault-Token: root" \
    --data-raw '{
   "name": "panda",
-  "metadata": {
-    "organization": "Playground"
-  },
   "policies": ["rabbitmq"]
 }'
 ```
@@ -80,7 +79,9 @@ curl --request POST http://127.0.0.1:8200/v1/identity/entity \
 
 Now we have all the ground work set up, time to make the user we can log in with.
 
-Below is the curl command to make a user with the name panda and the password pass. 
+Below is the curl command to make a user with the name panda and the password pass.
+
+This command makes a user called `panda` and sets its password to `pass`
 
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/auth/userpass/users/panda \
@@ -168,6 +169,8 @@ Now we can login with our app, its not very useful unless we enable a secrets en
 
 The first step to use a secret engine in vault is to enable the engine mount. Below is the curl command to enable the rabbitmq secret engine.
 
+This creates an secret engine of type `rabbitmq` at path `/rabbitmq`
+
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/sys/mounts/rabbitmq \
     --header "X-Vault-Token: root" \
@@ -198,6 +201,8 @@ curl --request POST http://127.0.0.1:8200/v1/rabbitmq/config/connection \
 Next we need to tell vault what the rabbitMQ role should look like, this will be the permission in side of rabbitMQ that the new user will get.
 
 These permissions will let the app configure and services called chat, and auto named services. [https://www.rabbitmq.com/access-control.html#authorisation](https://www.rabbitmq.com/access-control.html#authorisation)
+
+This create a role at `/chat` with the access needed to send and resive messages. The name of the role is the same as what we gave access to from the vault policy earlyer.
 
 ``` bash
 curl --request POST http://127.0.0.1:8200/v1/rabbitmq/roles/chat \
